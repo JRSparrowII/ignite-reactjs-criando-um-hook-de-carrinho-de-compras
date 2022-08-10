@@ -19,16 +19,13 @@ interface ProductFormatted extends Product {
 
 interface CartItemsAmount {
   [key: number]: number;
-}
+} 
 
 const Home = (): JSX.Element => {
   const [products, setProducts] = useState<ProductFormatted[]>([]);
-  // const { addProduct, cart } = useCart();
+  const { addProduct, cart } = useCart();
 
-  // const cartItemsAmount = cart.reduce((sumAmount, product) => {
-  //   // TODO
-  // }, {} as CartItemsAmount)
-
+  // LISTANDO OS PRODUTOS NA TELA
   useEffect(() => {
     async function loadProducts() {      
       // TODO
@@ -36,12 +33,11 @@ const Home = (): JSX.Element => {
         setProducts(response.data);
       })      
     }
-
-    loadProducts();
-    console.log('tamanho ',products.length)
+    loadProducts();    
   }, []);
 
-  function handleAddProduct(id: number) {
+  function handleAddProduct(id: number) {   
+    addProduct(id);
     // TODO
   }
 
@@ -49,29 +45,33 @@ const Home = (): JSX.Element => {
     <ProductList>
       {products.map( (product) => {        
         return (
-        <li>
-          <img src="https://rocketseat-cdn.s3-sa-east-1.amazonaws.com/modulo-redux/tenis1.jpg" alt="Tênis de Caminhada Leve Confortável" />
-          <strong>Tênis de Caminhada Leve Confortável</strong>
-          <span>R$ 179,90</span>
+        <li key={product.id}>
+          <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
+          <strong>{product.title}</strong>
+          <span>
+            {new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(product.price)}            
+          </span>  
           <button
             type="button"
             data-testid="add-product-button"
-          // onClick={() => handleAddProduct(product.id)}
+          onClick={() => handleAddProduct(product.id)}
           >
             <div data-testid="cart-product-quantity">
               <MdAddShoppingCart size={16} color="#FFF" />
-              {/* {cartItemsAmount[product.id] || 0} */} 2
+              {/* {cartItemsAmount[product.id] || 0} */}
             </div>
-
             <span>ADICIONAR AO CARRINHO</span>
           </button>
         </li> 
         )       
-      })}
-      
+      })}     
       
     </ProductList>
   );
 };
 
 export default Home;
+

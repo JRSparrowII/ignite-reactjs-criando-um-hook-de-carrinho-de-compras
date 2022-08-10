@@ -9,15 +9,13 @@ import { api } from '../../services/api';
 
 const Header = (): JSX.Element => {
   const { cart } = useCart();
-  const [cartSize, setCartSize] = useState(0);
+  const cartSize = cart.length; //TODO
 
-  // useEffect(() => {
-  //   console.log('estou no useeffect1');
-  //   api.get('products').then( response => {
-  //     console.log(response.data);
-  //   })
-
-  // },[]);
+  useEffect(() => {    
+    api.get('products').then( response => {
+      // console.log(response.data);
+    })
+  },[]);
 
   return (
     <Container>
