@@ -34,24 +34,23 @@ const Cart = (): JSX.Element => {
 
   function handleProductIncrement(product: Product) {                 
     // // TODO
-    // {
-    //   ID: 1
-    //   NOME: 
-    //   QTD: 
-    //   PREÇO
-    // }
+    const increment = {
+      productId: product.id,
+      amount: product.amount +1
+    }
 
-    // setcar (product.amout + 1)
+    updateProductAmount(increment)
+   
   }
 
   function handleProductDecrement(product: Product) {   
     // TODO
-    const ram = {
+    const decrement = {
       productId: product.id,
       amount: product.amount -1
     }
 
-    updateProductAmount(ram)
+    updateProductAmount(decrement)
   }
 
   function handleRemoveProduct(productId: number) {

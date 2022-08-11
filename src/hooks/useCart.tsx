@@ -97,31 +97,41 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     }
   };
 
+  // ATUALIZANDO AS COMPRAS DO CARRINHO PARA MAIS OU MENOS
   const updateProductAmount = async ({
     productId,
     amount,
   }: UpdateProductAmount) => {
     try {
-      // TODO
+      // TODO   
       
-      // const newCart = cart.map { item
-      //   if item.id === productId {
-      //     item.amount = amount
-      //   }
-      //   return item
+      // {
+      //   productId: 1,
+      //   qtd: 3
+      // }
+      // {
+      //   productId: 2,
+      //   qtd: 2
       // }
 
-      // setCart(newCart);
+      const newProductAmount = cart.map ((item) => {
+        if (item.id === productId) {
+          item.amount = amount;               
+        }              
+        return item;
+      })  
 
-      // const newShopCart = cart.map((item) =>{
-      //   if (item.id === productId) {
-      //     item.amount = item.amount + 1;
-      //     resultado = true;          
-      //   }              
-      //   return item; 
-      // })
-     
+      setCart(newProductAmount)
 
+      // const newUpdateProductAmount = cart.reduce((acc, productId) => {
+      //    acc.sums += productId.amount + 1;            
+      //    acc.withdraws -= productId.amount - 1;            
+      //   }
+      //   return acc;
+      // },{
+      //     sums: 0,
+      //     withdraws: 0         
+      // })      
 
     } catch {
       // TODO
