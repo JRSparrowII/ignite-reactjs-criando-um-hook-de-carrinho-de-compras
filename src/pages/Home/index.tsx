@@ -25,6 +25,15 @@ const Home = (): JSX.Element => {
   const [products, setProducts] = useState<ProductFormatted[]>([]);
   const { addProduct, cart } = useCart();
 
+  // COLOCANDO A QUANTIDADE DE ITENS DENTRO DO CARRINHO
+  const cartItemsAmount = cart.reduce((sumAmount, product) => {
+    // TODO    
+   
+    sumAmount[product.id]= product.amount; 
+    return sumAmount
+    
+  }, {} as CartItemsAmount)
+
   // LISTANDO OS PRODUTOS NA TELA
   useEffect(() => {
     async function loadProducts() {      
@@ -47,7 +56,8 @@ const Home = (): JSX.Element => {
         return (
         <li key={product.id}>
           <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
-          <strong>{product.title}</strong>
+          {/* remover o product.id abaixo */}
+          <strong> { product.id } | {product.title}</strong>
           <span>
             {new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
@@ -61,7 +71,7 @@ const Home = (): JSX.Element => {
           >
             <div data-testid="cart-product-quantity">
               <MdAddShoppingCart size={16} color="#FFF" />
-              {/* {cartItemsAmount[product.id] || 0} */}
+              {cartItemsAmount[product.id] || 0} 
             </div>
             <span>ADICIONAR AO CARRINHO</span>
           </button>

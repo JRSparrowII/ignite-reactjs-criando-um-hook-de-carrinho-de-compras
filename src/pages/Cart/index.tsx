@@ -28,7 +28,8 @@ const Cart = (): JSX.Element => {
 
   // CALCULANDO O TOTAL GERAL DE COMRPAS NO CARRINHO
   const total = cart.reduce((sumTotal, product) => {
-    sumTotal += product.price  
+    sumTotal += product.price * product.amount;   
+   
     return sumTotal;
   }, 0) 
 
@@ -58,9 +59,9 @@ const Cart = (): JSX.Element => {
     removeProduct(productId);  
   }
 
-  useEffect(() => {
-    console.log('total', total)
-  }, [total]);
+  // useEffect(() => {
+  //   console.log('total', total)
+  // }, [total]);
 
   return (
     <Container>
@@ -76,16 +77,16 @@ const Cart = (): JSX.Element => {
         </thead>
         <tbody>
           {/* LISTANDO AS COMPRAS FEITAS NO CARRINHO */}
-          {cart.map((product) => {
+          {cart.map((productCarrinho) => {
             return(
               <tr data-testid="product">
               <td>
-                <img src={product.image} alt="" />
+                <img src={productCarrinho.image} alt="" />
               </td>
               <td>
-                <strong>{product.title}</strong>
+                <strong>{productCarrinho.title}</strong>
                 <strong>
-                  {formatPrice(product.price)}                      
+                  {formatPrice(productCarrinho.price)}                      
                 </strong>
               </td>
               <td>
@@ -93,8 +94,8 @@ const Cart = (): JSX.Element => {
                   <button
                     type="button"
                     data-testid="decrement-product"
-                  // disabled={product.amount <= 1}
-                  onClick={() => handleProductDecrement(product)}
+                  disabled={productCarrinho.amount <= 1}
+                  onClick={() => handleProductDecrement(productCarrinho)}
                   >
                     <MdRemoveCircleOutline size={20} />
                   </button>
@@ -102,12 +103,12 @@ const Cart = (): JSX.Element => {
                     type="text"
                     data-testid="product-amount"
                     readOnly
-                    value={product.amount}
+                    value={productCarrinho.amount}
                   />
                   <button
                     type="button"
                     data-testid="increment-product"
-                  onClick={() => handleProductIncrement(product)}
+                  onClick={() => handleProductIncrement(productCarrinho)}
                   >
                     <MdAddCircleOutline size={20} />
                   </button>
@@ -116,14 +117,14 @@ const Cart = (): JSX.Element => {
               <td>
                 <strong>
                   {/* CALCULANDO O SUBTOTAL DOS PRODUTOS NO CARRINHO */}
-                  {formatPrice(product.price * product.amount)}                      
+                  {formatPrice(productCarrinho.price * productCarrinho.amount)}                      
                 </strong>
               </td>
               <td>
                 <button
                   type="button"
                   data-testid="remove-product"
-                onClick={() => handleRemoveProduct(product.id)}
+                onClick={() => handleRemoveProduct(productCarrinho.id)}
                 >
                   <MdDelete size={20} />
                 </button>
@@ -140,7 +141,13 @@ const Cart = (): JSX.Element => {
 
         <Total>
           <span>TOTAL</span>
-          <strong>{total}</strong>
+          <strong>
+            {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+            }).format(total)}
+            {/* {total} */}
+          </strong>
         </Total>
       </footer>
     </Container>

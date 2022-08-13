@@ -19,6 +19,10 @@ interface CartContextData {
   updateProductAmount: ({ productId, amount }: UpdateProductAmount) => void;
 }
 
+interface CartItemsAmount {
+  [key: number]: number;
+} 
+
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
@@ -37,32 +41,42 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   //   console.log('storagedCart', localStorage.getItem('@RocketShoes:cart'))
   // }, [cart]);
 
-
   // ADICIONANDO PRODUTOS NO CARRINHO
   const addProduct = async (productId: number) => {
     try {
       // TODO
-      if (!productId) {
-        // alert('Informe a sua atividade');
-        return;
-      }
-      
-      var resultado = false;   
 
-      // FAZENDO A VERIFICAÇÃO DO ID
+      const resultadoStock = await api.get('/stock/' + productId) ;
+      const estoque = resultadoStock.data;
+
+      // ATUALIZA PRODUTO SE EXISTIR NO CARRINHO
+      var resultado = false;   
+      var saldoLimite = false;
+
       const newShopCart = cart.map((item) =>{
-        if (item.id === productId) {
-          item.amount = item.amount + 1;
-          resultado = true;          
+        if (item.id === productId) {                    
+          if (estoque.amount > item.amount) {
+            item.amount = item.amount + 1;  
+            resultado = true; 
+          } else {
+            toast.error('Quantidade solicitada fora de estoque');  
+            saldoLimite = true;                      
+          }                  
         }              
         return item; 
       })
 
+      if (saldoLimite) {
+        return;
+      }
+
+      console.log('Sou '+ saldoLimite + ', nao devo entrar aqui se sou true');
+    
+      //ADICIONA O PRODUTO NO CARRINHO QUANDO NÃO EXISTE
       if (resultado === false) {
         const response = await api.get('/products/' + productId)  
-
         const { data } = response;
-
+      
         const newShopCart = {
           id: productId,
           title: data.title,
@@ -70,7 +84,12 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
           image: data.image,
           amount: 1,
         }
-        setCart(saldoCompras => [...saldoCompras, newShopCart]);
+        
+        if (estoque.amount >= newShopCart.amount ) {
+          setCart(saldoCompras => [...saldoCompras, newShopCart]);
+        } else {
+          toast.error('Quantidade solicitada fora de estoque');
+        }        
       } else {
         setCart(newShopCart)
       }  
@@ -80,7 +99,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
    
     } catch {
       // TODO
-      alert("Alguma funcionalidade no sistema ficou desativa!")
+      toast.error("Alguma funcionalidade no sistema ficou desativa!")
     }
   };
 
@@ -103,35 +122,25 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount,
   }: UpdateProductAmount) => {
     try {
-      // TODO   
-      
-      // {
-      //   productId: 1,
-      //   qtd: 3
-      // }
-      // {
-      //   productId: 2,
-      //   qtd: 2
-      // }
+      // TODO 
+      var saldoAtualizado = amount;
+
+      const resultadoStock = await api.get('/stock/' + productId) ;
+      const estoque = resultadoStock.data;
 
       const newProductAmount = cart.map ((item) => {
         if (item.id === productId) {
-          item.amount = amount;               
+          console.log('Qtd q tem no estoque', estoque.amount)
+          console.log('valor q estou tentando atualizar', saldoAtualizado)
+          if (estoque.amount >= saldoAtualizado) {
+            item.amount = saldoAtualizado;
+            console.log('Atualizei o estoque')
+          }                         
         }              
         return item;
       })  
 
-      setCart(newProductAmount)
-
-      // const newUpdateProductAmount = cart.reduce((acc, productId) => {
-      //    acc.sums += productId.amount + 1;            
-      //    acc.withdraws -= productId.amount - 1;            
-      //   }
-      //   return acc;
-      // },{
-      //     sums: 0,
-      //     withdraws: 0         
-      // })      
+      setCart(newProductAmount)        
 
     } catch {
       // TODO
