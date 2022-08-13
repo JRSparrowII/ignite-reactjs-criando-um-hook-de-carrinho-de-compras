@@ -56,8 +56,7 @@ const Home = (): JSX.Element => {
         return (
         <li key={product.id}>
           <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
-          {/* remover o product.id abaixo */}
-          <strong> { product.id } | {product.title}</strong>
+          <strong>{product.title}</strong>
           <span>
             {new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
