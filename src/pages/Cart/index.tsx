@@ -79,7 +79,7 @@ const Cart = (): JSX.Element => {
           {/* LISTANDO AS COMPRAS FEITAS NO CARRINHO */}
           {cart.map((productCarrinho) => {
             return(
-              <tr data-testid="product">
+              <tr data-testid="product" key={productCarrinho.id}>
               <td>
                 <img src={productCarrinho.image} alt="" />
               </td>
