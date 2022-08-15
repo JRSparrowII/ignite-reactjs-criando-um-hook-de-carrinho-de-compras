@@ -11,6 +11,7 @@ const Header = (): JSX.Element => {
   const { cart } = useCart();
   const cartSize = cart.length; //TODO
 
+  // CARREGANDO OS DADOS DA API
   useEffect(() => {    
     api.get('products').then( response => {
       // console.log(response.data);
